@@ -1,0 +1,5 @@
+#!/bin/sh
+export DB_HOST=localhost
+export DB_NAME=s4
+export DB_USER=root
+export DB_PASSWORD=m!grate

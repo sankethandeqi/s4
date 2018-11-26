@@ -1,0 +1,31 @@
+.alert-danger {
+    border-color: #ec3145;
+    color: #ec3145;
+    background: #fff;
+}
+
+body {
+    font-family: 'Noto Sans', sans-serif;
+}
+
+h1, h2, h3, h4, h5 {
+    font-family: 'Open Sans', sans-serif;
+    font-weight: 600;
+}
+
+/* Main navigation */
+.primary-nav.navbar {
+    padding: 0.3rem 1rem;
+    background: #b269f5;
+    background: -webkit-linear-gradient(to top, #6784ef, #b269f5);
+    background: linear-gradient(to top, #6784ef, #b269f5);
+}
+.primary-nav .navbar-nav .active>.nav-link,
+.primary-nav .navbar-nav .nav-link.active,
+.primary-nav .navbar-nav .nav-link.show,
+.primary-nav .navbar-nav .show>.nav-link {
+    color: rgba(255, 255, 255, 1);
+}
+.primary-nav .navbar-nav .nav-link {
+    color: rgba(255, 255, 255, 0.7);
+}
