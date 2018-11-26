@@ -19,9 +19,22 @@
             </td>
             <td><strong class="text-gray-dark">{{file.name}}</strong></td>
             <td><span class="d-block">{{file.type}}</span></td>
-            <td>{{filesStatus[index]}}</td>            
+            <td>
+              <span
+                class="badge badge-primary"
+                v-bind:class="{
+                  'badge-success': filesStatus[index] == 'Sent',
+                  'badge-danger': filesStatus[index] == 'Error',
+                  'badge-primary': filesStatus[index] == 'Sending',
+                  'badge-secondary': filesStatus[index] == 'No Action',
+                }"
+                >
+                {{filesStatus[index]}}
+              </span>
+            </td>
             <td>
               <a href="#" v-if="filesStatus[index] == 'No Action'" v-on:click="removeFile(index)"><i class="fas fa-trash-alt"></i></a>
+              <i v-if="filesStatus[index] == 'Sent'" class="fas fa-check text-success"></i>
               <i v-if="filesStatus[index] == 'Sending'" class="fas fa-circle-notch fa-spin"></i>
               <button
                 v-if="filesStatus[index] == 'Error'"

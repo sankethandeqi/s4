@@ -29,7 +29,7 @@ export default {
       //}
       formData.append("resource", file);
       axios
-        .post(baseUrl + "/upload", formData, {
+        .post(baseUrl, formData, {
           headers: {
             "Content-Type": "multipart/form-data"
           }
