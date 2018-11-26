@@ -2,10 +2,10 @@ const prodConfig = require("./config.prod");
 
 const defaultConfig = {
     db: {
-        host: "localhost",
-        name: "s4",
-        user: "root",
-        password: "m!grate"
+        host: "",
+        name: "",
+        user: "",
+        password: ""
     },
 
     // aws bucket name
