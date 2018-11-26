@@ -9,26 +9,46 @@
             <th>Preview</th>
             <th>File Name</th>
             <th>File Type</th>
+            <th>Status</th>
             <th>Actions</th>
           </tr>
-          <tr class="text-muted" v-for="(file, index) in files" :key="index">
+          <tr class="text-muted bg-error" v-bind:class="{'table-danger': filesStatus[index] == 'Error'}" v-for="(file, index) in files" :key="index">
             <td>
               <img v-if="isImage(file)" v-bind:src="getFilePreview(file)" width="50" height="50" class="rounded" />
               <i v-if="!isImage(file)" v-bind:class="getFileTypeClass(file)"></i>
             </td>
             <td><strong class="text-gray-dark">{{file.name}}</strong></td>
             <td><span class="d-block">{{file.type}}</span></td>
-            <td><a href="#"><i class="fas fa-trash-alt"></i></a></td>
+            <td>{{filesStatus[index]}}</td>            
+            <td>
+              <a href="#" v-if="filesStatus[index] == 'No Action'" v-on:click="removeFile(index)"><i class="fas fa-trash-alt"></i></a>
+              <i v-if="filesStatus[index] == 'Sending'" class="fas fa-circle-notch fa-spin"></i>
+              <button
+                v-if="filesStatus[index] == 'Error'"
+                v-on:click="uploadSingleFile(index)"
+                class="btn btn-light border"
+                >
+                Try again <i class="fas fa-file-upload"></i>
+              </button>
+            </td>            
           </tr>
-          <tr>
-            <td colspan="4">
+          <tr v-if="!attempted">
+            <td colspan="5">
               <small class="d-block text-right mt-3">
                 <a href="javascript:void(0);" v-on:click="resetFiles" style="color: red;">Click here to cancel</a>
               </small>
             </td>
           </tr>
         </table>
-        <button class="btn btn-light border btn-lg mt-3 mb-5" v-on:click="uploadFile">Start Uploading <i class="fas fa-file-upload"></i></button>
+        <button
+          class="btn btn-light border btn-lg mt-3 mb-5"
+          v-on:click="uploadFiles"
+          v-if="!attempted"
+          :disabled="uploading"
+          >
+            Start Uploading
+            <i class="fas fa-file-upload"></i>
+        </button>
       </div>
       
       <section v-if="!files.length">
@@ -49,23 +69,36 @@ import FileUploadService from "../services/FileUploadService";
 export default {
   data() {
     return {
-      files: []
+      files: [],
+      filesStatus: [],
+      uploading: false,
+
+      // if atleast one attempt is made this will be set to true
+      attempted: false
     };
   },
   methods: {
     handleFileUpload() {
       this.files = this.$refs.file.files;
+      for (let i = 0; i < this.files.length; i++) {
+        this.filesStatus[i] = "No Action";
+      }
       console.log(this.files);
     },
+
     resetFiles() {
       this.files = [];
+      this.filesStatus = [];
     },
+
     getFilePreview(file) {
       return window.URL.createObjectURL(file);
     },
+
     isImage(file) {
       return file.name.match(/.(jpg|jpeg|png|gif)$/i);
     },
+
     getFileTypeClass(file) {
       const classList = ["fas", "fa-3x"];
       if (file.name.match(/.(pdf)$/i)) {
@@ -79,16 +112,60 @@ export default {
       }
       return classList.join(" ");
     },
-    uploadFile() {
+
+    setFileStatus(index, status) {
+      const filesStatus = [...this.filesStatus];
+      filesStatus[index] = status;
+      this.filesStatus = filesStatus;
+    },
+
+    uploadSingleFile(index) {
+      const file = this.files[index];
+      this.setFileStatus(index, "Sending");
+      FileUploadService.uploadFiles(file)
+        .then(data => {
+          console.log(data);
+          this.setFileStatus(index, "Sent");
+        })
+        .catch(err => {
+          console.log("Error occurred");
+          this.setFileStatus(index, "Error");
+          console.log(err);
+        })
+        .finally(() => {
+          this.uploading = false;
+        });
+    },
+
+    removeFile(index) {
+      const files = [...this.files];
+      const filesStatus = [...this.filesStatus];
+      files.splice(index, 1);
+      filesStatus.splice(index, 1);
+      this.files = files;
+      this.filesStatus = filesStatus;
+    },
+
+    uploadFiles() {
+      if (this.uploading) return;
+
+      this.attempted = true;
+      this.uploading = true;
       for (let i = 0; i < this.files.length; i++) {
         const file = this.files[i];
+        this.setFileStatus(i, "Sending");
         FileUploadService.uploadFiles(file)
           .then(data => {
             console.log(data);
+            this.setFileStatus(i, "Sent");
           })
           .catch(err => {
             console.log("Error occurred");
+            this.setFileStatus(i, "Error");
             console.log(err);
+          })
+          .finally(() => {
+            this.uploading = false;
           });
       }
     }
