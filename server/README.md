@@ -5,7 +5,8 @@ npm run start-local
 
 ## Prerequisite
 Home directory should contain a `.aws` directory containing file named `credentials`
-```~/.aws/credentials```
+
+```cat ~/.aws/credentials```
 ```
 [default]
 aws_access_key_id = XXXXXXXXXXX
