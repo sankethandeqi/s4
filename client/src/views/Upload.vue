@@ -97,7 +97,6 @@ export default {
       for (let i = 0; i < this.files.length; i++) {
         this.filesStatus[i] = "No Action";
       }
-      console.log(this.files);
     },
 
     resetFiles() {
@@ -137,14 +136,11 @@ export default {
       const file = this.files[index];
       this.setFileStatus(index, "Sending");
       FileUploadService.uploadFiles(file)
-        .then(data => {
-          console.log(data);
+        .then(() => {
           this.setFileStatus(index, "Sent");
         })
-        .catch(err => {
-          console.log("Error occurred");
+        .catch(() => {
           this.setFileStatus(index, "Error");
-          console.log(err);
         })
         .finally(() => {
           this.uploading = false;
@@ -169,14 +165,11 @@ export default {
         const file = this.files[i];
         this.setFileStatus(i, "Sending");
         FileUploadService.uploadFiles(file, this.$socketId)
-          .then(data => {
-            console.log(data);
+          .then(() => {
             this.setFileStatus(i, "Sent");
           })
-          .catch(err => {
-            console.log("Error occurred");
+          .catch(() => {
             this.setFileStatus(i, "Error");
-            console.log(err);
           })
           .finally(() => {
             this.uploading = false;

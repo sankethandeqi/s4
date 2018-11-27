@@ -12,7 +12,7 @@
         </tr>
         <tr v-for="(file, index) in files" :key="index">          
           <td>{{ file.name }}</td>
-          <td>{{ file.size }}</td>
+          <td>{{ bytesToSize(file.size) }}</td>
           <td>{{ file.created_at }}</td>
           <td>            
             <span class="badge badge-warning" v-if="!file.etag">Uploading</span>
@@ -25,25 +25,32 @@
 </template>
 
 <script>
-import FileUploadService from "../services/FileUploadService";
+import { mapState, mapActions, mapMutations } from "vuex";
 export default {
   name: "home",
-  data: function() {
-    return {
-      files: [],
-      error: false
-    };
-  },
   created() {
-    FileUploadService.getAll()
-      .then(files => {
-        this.files = files;
-      })
-      .catch(err => {
-        alert("Unexpected error occurred");
-        console.log(err);
-        this.error = true;
-      });
+    this.getAllFiles();
+    this.clearNewlyAdded();
+  },
+  computed: {
+    ...mapState({
+      files: state => state.file.files,
+      error: state => state.file.error
+    })
+  },
+  methods: {
+    bytesToSize: bytes => {
+      const sizes = ["Bytes", "KB", "MB", "GB", "TB"];
+      if (bytes == 0) return "0 Byte";
+      const i = parseInt(Math.floor(Math.log(bytes) / Math.log(1024)));
+      return Math.round(bytes / Math.pow(1024, i), 2) + " " + sizes[i];
+    },
+    ...mapActions({
+      getAllFiles: "file/getAllFiles"
+    }),
+    ...mapMutations({
+      clearNewlyAdded: "file/clearNewlyAdded"
+    })
   }
 };
 </script>

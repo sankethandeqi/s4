@@ -7,15 +7,16 @@
 
 <script>
 import Navigation from "@/components/Navigation.vue";
+import store from "./store/index";
 import Vue from "vue";
 import io from "socket.io-client";
 const socket = io("http://localhost:3000");
+
 socket.on("connect", function() {
   Vue.prototype.$socketId = socket.id;
 });
-socket.on("UPLOADED_S3", function(data) {
-  // TODO - Move this to VUEX
-  console.log(data);
+socket.on("UPLOADED_S3", data => {
+  store.commit("file/updateNewlyUploaded", data);
 });
 export default {
   name: "Main",

@@ -9,7 +9,6 @@ const eventEmitter = require("../utils/event");
 module.exports = () => {
     queue.process("s3", async function(job, done) {
         try {
-            console.log("Starting queue");
             const fileObj = await FileModel.findByPk(job.data.id);
             
             // Set status as sending
@@ -22,8 +21,6 @@ module.exports = () => {
                 fileObj.local_path,
                 `${fileObj.id}-${fileObj.name}`
             );
-            console.log("data after uploading s3");
-            console.log(data);
             
             // set status as sent
             fileObj.status = 2;
@@ -39,7 +36,8 @@ module.exports = () => {
                 "UPLOADED_S3",
                 {
                     socketId: fileObj.socket_id,
-                    name: fileObj.name
+                    name: fileObj.name,
+                    id: fileObj.id
                 }
             );
             

@@ -7,12 +7,9 @@ export default {
       axios
         .get(baseUrl)
         .then(data => {
-          console.log("SUCCESS!!");
-          console.log(data);
           resolve(data.data.data.files);
         })
         .catch(err => {
-          console.log("FAILURE!!");
           reject(err);
         });
     });
@@ -29,11 +26,9 @@ export default {
           }
         })
         .then(data => {
-          console.log("SUCCESS!!");
           resolve(data);
         })
         .catch(err => {
-          console.log("FAILURE!!");
           reject(err);
         });
     });

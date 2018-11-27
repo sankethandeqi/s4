@@ -3,23 +3,7 @@ const multer  = require("multer");
 let uploadObj = multer({dest: config.uploadDir}).single("resource");
 var kue = require("kue")
     , queue = kue.createQueue();
-const {
-    addToBucket,
-    //listObjects,
-    //downloadFileLocally
-} = require("../utils/s3");
 const { FileModel } = require("../db");
-
-async function uploadS3(req, res) {
-    const data = await addToBucket(config.bucketName, req.keyName);
-    console.log(data);
-    // send response
-    res.send({
-        data: {
-            success: true
-        }
-    });
-}
 
 /**
  * @api {post} /v1/files/ Upload file to S3
@@ -83,7 +67,6 @@ async function getAll(req, res) {
 }
 
 module.exports = {
-    uploadS3,
     upload,
     getAll
 };
