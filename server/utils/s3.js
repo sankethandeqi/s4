@@ -40,6 +40,24 @@ function addToBucket(bucketName, pathToResource, uniqueFileName) {
     });    
 }
 
+function deleteFromBucket(bucketName, key) {
+    return new Promise((resolve, reject) => {
+        s3.deleteObject(
+            {
+                Bucket: bucketName,
+                Key: key
+            },
+            (err, data) => {
+                if (err) {                    
+                    return reject(err);
+                }
+                
+                resolve(data);                    
+            }
+        );
+    });
+}
+
 /**
  * List all objects in a bucket
  *
@@ -86,5 +104,6 @@ function downloadFileLocally(bucketName, keyName, downloadToFilePath) {
 module.exports = {
     addToBucket,
     listObjects,
-    downloadFileLocally
+    downloadFileLocally,
+    deleteFromBucket
 };

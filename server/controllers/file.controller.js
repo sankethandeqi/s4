@@ -4,6 +4,33 @@ let uploadObj = multer({dest: config.uploadDir}).single("resource");
 var kue = require("kue")
     , queue = kue.createQueue();
 const { FileModel } = require("../db");
+const Sequelize = require("sequelize");
+const Op = Sequelize.Op;
+
+function remove(req, res) {
+    const id = req.params.id;
+    // add to queue
+    const job = queue.create("s3", {
+        title: `S3 delete file id ${id}`,
+        action: "DELETE",
+        id
+    })
+        .save(err => {
+            if (err) {
+                return res.send({
+                    err
+                });
+                
+            }
+
+            res.send({
+                data: {                    
+                    job_id: job.id
+                },
+                success: true
+            });            
+        });
+}
 
 /**
  * @api {post} /v1/files/ Upload file to S3
@@ -30,7 +57,8 @@ function upload(req, res) {
         // add to queue
         const job = queue.create("s3", {
             title: `S3 file upload for db file id ${file.dataValues.id}`,
-            id: file.dataValues.id                
+            id: file.dataValues.id,
+            action: "UPLOAD"
         })
             .save(err => {
                 if (err) {
@@ -41,8 +69,8 @@ function upload(req, res) {
                 }
     
                 res.send({
-                    data: {
-                        success: true,
+                    success: true,
+                    data: {                        
                         id: file.dataValues.id,
                         job_id: job.id
                     }
@@ -58,7 +86,14 @@ function upload(req, res) {
  */
 async function getAll(req, res) {
     //const data = await listObjects(config.bucketName);    
-    const allFiles = await FileModel.findAll();
+    const allFiles = await FileModel.findAll({
+        where: {
+            deleted: 0,
+            etag: {
+                [Op.ne]: ""
+            }
+        }
+    });
     res.send({
         data: {
             files: allFiles
@@ -68,5 +103,6 @@ async function getAll(req, res) {
 
 module.exports = {
     upload,
-    getAll
+    getAll,
+    remove
 };

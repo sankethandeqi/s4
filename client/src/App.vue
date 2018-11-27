@@ -15,8 +15,14 @@ const socket = io("http://localhost:3000");
 socket.on("connect", function() {
   Vue.prototype.$socketId = socket.id;
 });
-socket.on("UPLOADED_S3", data => {
-  store.commit("file/updateNewlyUploaded", data);
+socket.on("S3_EVENT", data => {
+  console.log("data from S3 event delete");
+  console.log(data);
+  if (data.action == "DELETE") {
+    console.log("From delte");
+  } else if (data.action == "UPLOAD") {
+    store.commit("file/updateNewlyUploaded", data);
+  }
 });
 export default {
   name: "Main",

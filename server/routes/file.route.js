@@ -5,5 +5,6 @@ const FileController = require("../controllers/file.controller");
 
 router.post("/", FileController.upload);
 router.get("/", FileController.getAll);
+router.delete("/:id", FileController.remove);
 
 module.exports = router;

@@ -20,6 +20,7 @@ app.use(bodyParser.json());
 // enable CORS
 app.use(function(req, res, next) {
     res.header("Access-Control-Allow-Origin", "*");
+    res.header("Access-Control-Allow-Methods", "GET, POST, DELETE, OPTIONS");
     res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept, token");
     next();
 });
@@ -31,6 +32,7 @@ app.use("/v1/files", FileRouter);
 // this will also catch async errors since we are usign express-async-errors
 // eslint-disable-next-line no-unused-vars
 app.use(function (err, req, res, next) {
+    console.log(err);
     res.status(500).send({
         error: ["Unexpected error occurred"]
     });
@@ -51,6 +53,7 @@ io.on("connection", function(socket) {
     // socket.on("reply", function(){ /* */ }); // listen to the event
 });
 
-eventEmitter.on("UPLOADED_S3", data => {
-    io.sockets.connected[data.socketId].emit("UPLOADED_S3", data);
+eventEmitter.on("S3_EVENT", data => {
+    console.log("Sending S3_EVENT", data);
+    io.sockets.connected[data.socketId].emit("S3_EVENT", data);
 });

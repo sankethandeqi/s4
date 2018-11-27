@@ -32,5 +32,17 @@ export default {
           reject(err);
         });
     });
+  },
+  delete: id => {
+    return new Promise((resolve, reject) => {
+      axios
+        .delete(`${baseUrl}/${id}`)
+        .then(data => {
+          resolve(data.data.success);
+        })
+        .catch(err => {
+          reject(err);
+        });
+    });
   }
 };

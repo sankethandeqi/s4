@@ -72,6 +72,16 @@ export default {
           commit("updateError", true);
         });
     },
+    deleteFile({ commit }, file, index) {
+      console.log("index", index);
+      FileUploadService.delete(file.id)
+        .then(() => {
+          console.log("Deleted");
+        })
+        .catch(() => {
+          commit("updateError", true);
+        });
+    },
     sendOTP({ commit, state }) {
       commit("updateSending", true);
       AuthService.sendOTP(state.email)
