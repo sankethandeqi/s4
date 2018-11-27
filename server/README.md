@@ -11,7 +11,7 @@ aws_secret_access_key = XXXXXXXXXXXXXXXXXXXXXXXX
 Set `setenv` file with database credentials.
 Then run below command.
 ```
-. .\setenv
+. ./setenv
 ```
 
 ## Running server in development mode
