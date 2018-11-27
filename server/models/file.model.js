@@ -9,6 +9,7 @@ module.exports = (sequelize, type) => {
         size: type.BIGINT(20),
         name: type.STRING,
         local_path: type.STRING,
+        socket_id: type.STRING,
         status: {
             type: type.INTEGER,
             defaultValue: 0

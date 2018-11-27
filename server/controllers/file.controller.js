@@ -33,13 +33,14 @@ function upload(req, res) {
                 err
             });
         }
-        
+
         // save to database
         const file = await FileModel.create({
             etag: "", // create with empty etag
             size: req.file.size,
             name: req.file.originalname,
-            local_path: req.file.path
+            local_path: req.file.path,
+            socket_id: req.body.socketId
         });
         
         // add to queue

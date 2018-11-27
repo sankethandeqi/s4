@@ -4,6 +4,7 @@ const kue = require("kue")
 const config = require("../config/config");
 const { FileModel } = require("../db");
 const { addToBucket } = require("./s3");
+const eventEmitter = require("../utils/event");
 
 module.exports = () => {
     queue.process("s3", async function(job, done) {
@@ -32,6 +33,17 @@ module.exports = () => {
             // delete local file            
             fs.unlinkSync(fileObj.local_path);
             
+            // emit event for listeners to take a note
+            // registered listener will push socket notification to client
+            eventEmitter.emit(
+                "UPLOADED_S3",
+                {
+                    socketId: fileObj.socket_id,
+                    name: fileObj.name
+                }
+            );
+            
+            // call done without any error
             done();
         } catch(err) {
             const fileObj = await FileModel.findByPk(job.data.id);            

@@ -7,8 +7,18 @@
 
 <script>
 import Navigation from "@/components/Navigation.vue";
+import Vue from "vue";
+import io from "socket.io-client";
+const socket = io("http://localhost:3000");
+socket.on("connect", function() {
+  Vue.prototype.$socketId = socket.id;
+});
+socket.on("UPLOADED_S3", function(data) {
+  // TODO - Move this to VUEX
+  console.log(data);
+});
 export default {
-  name: "HelloWorld",
+  name: "Main",
   components: {
     Navigation
   }

@@ -6,6 +6,8 @@ const { httpPort } = require("./config/config");
 const processQueue = require("./utils/queue");
 //const path = require("path");
 const app = express();
+const server = require("http").createServer(app);
+const io = require("socket.io")(server);
 
 // let's have documentation at the root
 app.use(express.static("doc"));
@@ -35,12 +37,23 @@ app.use(function (err, req, res, next) {
     });
 });
 
-app.listen(httpPort, () => {
-    console.log(`S4 app listening on port ${httpPort}!`);
-});
+server.listen(httpPort);
 
 // Listener for DB connection successful event
 eventEmitter.on("DB_CONN_SUCCESS", () => {
     console.log("DB_CONN_SUCCESS triggered");
     processQueue();
+});
+
+io.on("connection", function(socket) {
+    console.log(`Connection established ${socket.id}`);
+    // socket.emit("request", /* */); // emit an event to the socket
+    // io.emit("broadcast", /* */); // emit an event to all connected sockets
+    // socket.on("reply", function(){ /* */ }); // listen to the event
+    
+    eventEmitter.on("UPLOADED_S3", data => {
+        console.log(`S3 Job for socketId ${data.socketId} done`);
+        console.log(data.socketId);
+        io.sockets.connected[data.socketId].emit("UPLOADED_S3", data);
+    });
 });

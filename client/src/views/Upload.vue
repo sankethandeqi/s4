@@ -28,6 +28,7 @@
                   'badge-primary': filesStatus[index] == 'Sending',
                   'badge-secondary': filesStatus[index] == 'No Action',
                 }"
+                v-bind:title="getTooltipTitle(index)"
                 >
                 {{filesStatus[index]}}
               </span>
@@ -167,7 +168,7 @@ export default {
       for (let i = 0; i < this.files.length; i++) {
         const file = this.files[i];
         this.setFileStatus(i, "Sending");
-        FileUploadService.uploadFiles(file)
+        FileUploadService.uploadFiles(file, this.$socketId)
           .then(data => {
             console.log(data);
             this.setFileStatus(i, "Sent");
@@ -180,6 +181,22 @@ export default {
           .finally(() => {
             this.uploading = false;
           });
+      }
+    },
+
+    getTooltipTitle(index) {
+      const status = this.filesStatus[index];
+      if (status == "No Action") {
+        return "Click button below to start uploading";
+      }
+      if (status == "Sending") {
+        return "File is being uploaded";
+      }
+      if (status == "Sent") {
+        return "File is uploaded and queued to send to S3";
+      }
+      if (status == "Error") {
+        return "Unexpected error occurred. You can try to upload this file again by clicking button to the right.";
       }
     }
   }

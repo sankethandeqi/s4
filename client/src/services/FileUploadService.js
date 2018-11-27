@@ -17,17 +17,11 @@ export default {
         });
     });
   },
-  uploadFiles: file => {
+  uploadFiles: (file, socketId) => {
     return new Promise((resolve, reject) => {
       const formData = new FormData();
-      //for (let i = 0; i < files.length; i++) {
-      //  let file = files[i];
-      //  formData.append("resources[" + i + "]", file);
-      //}
-      //for (let [i, file] of files) {
-      //  formData.append("resources[" + i + "]", file);
-      //}
       formData.append("resource", file);
+      formData.append("socketId", socketId);
       axios
         .post(baseUrl, formData, {
           headers: {
