@@ -3,3 +3,4 @@ export DB_HOST=XXXX
 export DB_NAME=XXXX
 export DB_USER=XXXX
 export DB_PASSWORD=XXXX
+export GOOGLE_CLIENT_ID=XXXX

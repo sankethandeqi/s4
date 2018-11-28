@@ -51,7 +51,7 @@ function upload(req, res) {
             size: req.file.size,
             name: req.file.originalname,
             local_path: req.file.path,
-            socket_id: req.body.socketId
+            user_id: req.decodedToken
         });
         
         // add to queue

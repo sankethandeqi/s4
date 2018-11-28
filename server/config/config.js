@@ -14,7 +14,9 @@ const defaultConfig = {
     bucketName: "qi-test-bucket",
 
     // upload directory with trailing slash
-    uploadDir: "uploads/"
+    uploadDir: "uploads/",
+    
+    JWTKey: "S@M$ram333!<>N"
 };
 
 module.exports = {

@@ -47,9 +47,9 @@ module.exports = () => {
             eventEmitter.emit(
                 "S3_EVENT",
                 {
-                    socketId: fileObj.socket_id,
                     name: fileObj.name,
                     id: fileObj.id,
+                    userId: fileObj.user_id,
                     action: job.data.action
                 }
             );

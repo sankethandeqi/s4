@@ -1,7 +1,10 @@
 const express = require("express");
 const bodyParser = require("body-parser");
 const eventEmitter = require("./utils/event");
+const jwtMiddleware = require("./middlewares/jwt.middleware");
+const AuthRouter = require("./routes/auth.route");
 const FileRouter = require("./routes/file.route");
+const { UserSocketModel } = require("./db");
 const { httpPort } = require("./config/config");
 const processQueue = require("./utils/queue");
 const app = express();
@@ -26,6 +29,12 @@ app.use(function(req, res, next) {
 });
 
 // router rules for auth
+app.use("/v1/auth", AuthRouter);
+
+// NOTE - we are using jwtMiddleware after auth
+// this is to skip token checks for auth routes
+app.use(jwtMiddleware);
+
 app.use("/v1/files", FileRouter);
 
 // custom error handlers
@@ -51,9 +60,28 @@ io.on("connection", function(socket) {
     // socket.emit("request", /* */); // emit an event to the socket
     // io.emit("broadcast", /* */); // emit an event to all connected sockets
     // socket.on("reply", function(){ /* */ }); // listen to the event
+
+    socket.on("disconnect", async function() {
+        console.log(`Got disconnect ${socket.id}!`);
+        await UserSocketModel.destroy({
+            where: {
+                socket_id: socket.id
+            }
+        });
+    });
 });
 
-eventEmitter.on("S3_EVENT", data => {
+eventEmitter.on("S3_EVENT", async data => {
     console.log("Sending S3_EVENT", data);
-    io.sockets.connected[data.socketId].emit("S3_EVENT", data);
+    const allUserSockets = await UserSocketModel.findAll({
+        where: {
+            user_id: data.userId
+        }
+    });
+    for (let userSocket of allUserSockets) {
+        //io.sockets.connected[data.socketId].emit("S3_EVENT", data);
+        if (userSocket.socket_id in io.sockets.connected) {
+            io.sockets.connected[userSocket.socket_id].emit("S3_EVENT", data);
+        }
+    }
 });

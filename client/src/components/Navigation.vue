@@ -10,7 +10,7 @@
         <span class="navbar-toggler-icon"></span>
       </button>
   
-      <div class="collapse navbar-collapse" id="navbarsExample03">
+      <div class="collapse navbar-collapse" v-if="user.id">
         <ul class="navbar-nav ml-auto">
           <router-link to="/" class="nav-item dropdown" tag="li" active-class="active" exact>
             <a class="nav-link">
@@ -29,6 +29,16 @@
           </router-link>
           <router-link to="/upload" class="nav-item" tag="li" active-class="active" exact><a class="nav-link">Upload</a></router-link>          
         </ul>
+      </div>
+      
+      <div class="media" v-if="user.id">
+        <img v-bind:src="user.imageUrl" width="36" height="36" class="rounded mr-2 mt-1 ml-3" />
+        <div class="media-body">
+          <div>
+            {{ user.name }}<br/>
+            <small>{{ user.email }}</small>
+          </div>
+        </div>
       </div>
     </div>
   </nav>
@@ -51,6 +61,14 @@ export default {
     ...mapState({
       newlyUploaded: state => {
         return state.file.newlyUploaded;
+      },
+      user: state => {
+        return {
+          id: state.auth.id,
+          name: state.auth.name,
+          email: state.auth.email,
+          imageUrl: state.auth.imageUrl
+        };
       }
     })
   }

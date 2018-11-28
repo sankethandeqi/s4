@@ -1,6 +1,8 @@
 const Sequelize = require("sequelize");
 const config = require("./config/config");
 const FileModel = require("./models/file.model");
+const GoogleUserModel = require("./models/googleUser.model");
+const UserSocketModel = require("./models/userSocket.model");
 
 // After successful establishment of DB conection we trigger an event
 const eventEmitter = require("./utils/event");
@@ -34,8 +36,12 @@ sequelize
     
 // all models will go here
 const File = FileModel(sequelize, Sequelize);
+const GoogleUser = GoogleUserModel(sequelize, Sequelize);
+const UserSocket = UserSocketModel(sequelize, Sequelize);
 
 // export all models
 module.exports = {
-    "FileModel": File
+    "FileModel": File,
+    "GoogleUserModel": GoogleUser,
+    "UserSocketModel": UserSocket,
 };
