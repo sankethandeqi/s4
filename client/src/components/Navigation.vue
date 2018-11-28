@@ -18,12 +18,14 @@
               <span class="badge badge-danger" v-if="Object.keys(newlyUploaded).length">{{ Object.keys(newlyUploaded).length }}</span>
             </a>
             <div class="dropdown-menu show p-2" v-if="Object.keys(newlyUploaded).length" aria-labelledby="navbarDropdown">
-              Below files have been added recently.
-              <ul>
-                <li v-for="(file, id) in newlyUploaded" :key="id">
-                  <strong>{{ file.name }}</strong>
-                </li>
-              </ul>
+              Below files have been modified recently.
+              
+                <dd v-for="(file, id) in newlyUploaded" :key="id">
+                  <i class="fas fa-trash-alt text-danger" v-if="file.action == 'DELETE'"></i> 
+                  <i class="fas fa-plus text-success" v-if="file.action == 'UPLOAD'"></i>
+                  <strong> {{ file.name }}</strong>
+                </dd>
+              
               <router-link to="/">Click</router-link> here to view updated list.
             </div>
           </router-link>

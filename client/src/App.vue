@@ -19,7 +19,7 @@ socket.on("S3_EVENT", data => {
   console.log("data from S3 event delete");
   console.log(data);
   if (data.action == "DELETE") {
-    console.log("From delte");
+    store.commit("file/updateNewlyUploaded", data);
   } else if (data.action == "UPLOAD") {
     store.commit("file/updateNewlyUploaded", data);
   }

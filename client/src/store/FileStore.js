@@ -31,6 +31,8 @@ export default {
       const newlyUploaded = { ...state.newlyUploaded };
       newlyUploaded[fileObj.id] = fileObj;
       state.newlyUploaded = newlyUploaded;
+      console.log("newlyUploaded from store");
+      console.log(newlyUploaded);
     },
     clearNewlyAdded(state) {
       state.newlyUploaded = {};
